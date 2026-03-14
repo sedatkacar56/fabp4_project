@@ -115,6 +115,14 @@ function renderPlots(exprValues, title) {
     plot_bgcolor: "#f8f8f8"
   };
 
+  const axisSettings = { zeroline: false, showgrid: false, showline: false };
+  groups.forEach((_, i) => {
+    const suf = i === 0 ? "" : String(i + 1);
+    layout[`xaxis${suf}`] = axisSettings;
+    layout[`yaxis${suf}`] = axisSettings;
+  });
+  layout.plot_bgcolor = "#fff";
+
   Plotly.newPlot("plot", traces, layout, { responsive: true });
 }
 
