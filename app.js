@@ -1,5 +1,39 @@
 let umapData = null;
 let groups = [];
+let geneList = [];
+let activeIdx = -1;
+
+async function loadGeneList() {
+  try {
+    const res = await fetch("./gene_list.json");
+    geneList = await res.json();
+  } catch (e) {
+    console.warn("gene_list.json not found — autocomplete disabled");
+  }
+}
+
+function showSuggestions(query) {
+  const box = document.getElementById("suggestions");
+  if (!query || geneList.length === 0) { box.style.display = "none"; return; }
+
+  const q = query.toLowerCase();
+  const matches = geneList.filter(g => g.toLowerCase().startsWith(q)).slice(0, 15);
+
+  if (matches.length === 0) { box.style.display = "none"; return; }
+
+  box.innerHTML = matches.map(g => `<div>${g}</div>`).join("");
+  box.style.display = "block";
+  activeIdx = -1;
+
+  box.querySelectorAll("div").forEach(item => {
+    item.addEventListener("mousedown", () => {
+      document.getElementById("geneInput").value = item.textContent;
+      box.style.display = "none";
+      loadGene();
+    });
+  });
+}
+
 
 async function loadUmap() {
   const res = await fetch("./umap.json");
@@ -98,8 +132,40 @@ async function loadGene() {
 }
 
 document.getElementById("loadBtn").addEventListener("click", loadGene);
+
+document.getElementById("geneInput").addEventListener("input", e => {
+  showSuggestions(e.target.value.trim());
+});
+
 document.getElementById("geneInput").addEventListener("keydown", e => {
-  if (e.key === "Enter") loadGene();
+  const box = document.getElementById("suggestions");
+  const items = box.querySelectorAll("div");
+
+  if (e.key === "ArrowDown") {
+    activeIdx = Math.min(activeIdx + 1, items.length - 1);
+  } else if (e.key === "ArrowUp") {
+    activeIdx = Math.max(activeIdx - 1, 0);
+  } else if (e.key === "Enter") {
+    if (activeIdx >= 0 && items[activeIdx]) {
+      document.getElementById("geneInput").value = items[activeIdx].textContent;
+      box.style.display = "none";
+    }
+    loadGene();
+    return;
+  } else if (e.key === "Escape") {
+    box.style.display = "none";
+    return;
+  }
+
+  items.forEach((el, i) => el.classList.toggle("active", i === activeIdx));
+  if (items[activeIdx]) items[activeIdx].scrollIntoView({ block: "nearest" });
+});
+
+document.addEventListener("click", e => {
+  if (!document.getElementById("autocomplete-wrapper").contains(e.target)) {
+    document.getElementById("suggestions").style.display = "none";
+  }
 });
 
 loadUmap();
+loadGeneList();

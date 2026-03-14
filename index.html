@@ -11,7 +11,10 @@
   <div class="wrap">
     <div class="sidebar">
       <h2>Single-Cell Gene Explorer</h2>
-      <input id="geneInput" type="text" placeholder="Type gene, e.g. PECAM1">
+      <div id="autocomplete-wrapper">
+        <input id="geneInput" type="text" placeholder="Type gene, e.g. Pecam1" autocomplete="off">
+        <div id="suggestions"></div>
+      </div>
       <button id="loadBtn">Load gene</button>
       <div id="status">Loading UMAP...</div>
     </div>

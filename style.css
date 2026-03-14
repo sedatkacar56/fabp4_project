@@ -32,3 +32,36 @@ input, button {
   margin-top: 10px;
   box-sizing: border-box;
 }
+
+#autocomplete-wrapper {
+  position: relative;
+  margin-top: 10px;
+}
+
+#autocomplete-wrapper input {
+  margin-top: 0;
+}
+
+#suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-top: none;
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 999;
+  display: none;
+}
+
+#suggestions div {
+  padding: 8px 10px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+#suggestions div:hover, #suggestions div.active {
+  background: #e8f0fe;
+}
