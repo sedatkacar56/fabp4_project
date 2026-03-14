@@ -42,7 +42,7 @@ function renderPlots(exprValues, title) {
       marker: {
         size: 3,
         color: colors,
-        colorscale: [[0, "lightgrey"], [0.0001, "#FFF7EC"], [0.25, "#FDD49E"], [0.5, "#FC8D59"], [0.75, "#D7301F"], [1, "#7F0000"]],
+        colorscale: [[0, "lightgrey"], [0.0001, "#F0F921"], [0.25, "#FCA636"], [0.5, "#E06D9C"], [0.75, "#9C179E"], [1, "#0D0887"]],
         cmin: globalMin,
         cmax: globalMax,
         showscale: i === n - 1,
