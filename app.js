@@ -38,7 +38,10 @@ function showSuggestions(query) {
 async function loadUmap() {
   const res = await fetch("./umap.json");
   umapData = await res.json();
-  groups = [...new Set(umapData.map(d => d.group))].sort();
+  const groupOrder = ["WT_F", "PAB_F", "PAB_FABP4_F"];
+  const found = [...new Set(umapData.map(d => d.group))];
+  groups = groupOrder.filter(g => found.includes(g))
+           .concat(found.filter(g => !groupOrder.includes(g)));
   renderPlots(null, "UMAP");
   document.getElementById("status").textContent = "UMAP loaded. Enter a gene.";
 }
@@ -55,8 +58,15 @@ function renderPlots(exprValues, title) {
   const annotations = [];
 
   groups.forEach((grp, i) => {
-    const cells = umapData.filter(d => d.group === grp);
+    let cells = umapData.filter(d => d.group === grp);
     const axSuffix = i === 0 ? "" : String(i + 1);
+
+    // order=TRUE: draw zero-expression cells first, high expression on top
+    if (exprValues) {
+      cells = [...cells].sort((a, b) =>
+        (exprValues[a.cell] ?? 0) - (exprValues[b.cell] ?? 0)
+      );
+    }
 
     const colors = exprValues
       ? cells.map(d => exprValues[d.cell] ?? 0)
