@@ -115,11 +115,11 @@ function renderPlots(exprValues, title) {
     plot_bgcolor: "#f8f8f8"
   };
 
-  const axisSettings = { zeroline: false, showgrid: false, showline: false };
+  const axisBase = { zeroline: false, showgrid: false, showline: true, linecolor: "black", linewidth: 1, ticks: "outside", tickcolor: "black" };
   groups.forEach((_, i) => {
     const suf = i === 0 ? "" : String(i + 1);
-    layout[`xaxis${suf}`] = axisSettings;
-    layout[`yaxis${suf}`] = axisSettings;
+    layout[`xaxis${suf}`] = { ...axisBase, title: { text: "umap_1", font: { size: 11 } } };
+    layout[`yaxis${suf}`] = { ...axisBase, title: { text: "umap_2", font: { size: 11 } } };
   });
   layout.plot_bgcolor = "#fff";
 
